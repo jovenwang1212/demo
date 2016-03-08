@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<script>
+    //去数组重复字符串
+    Array.prototype.unique = function () {
+        this.sort();	//先排序
+        var res = [this[0]];
+        for (var i = 1; i < this.length; i++) {
+            if (this[i] !== res[res.length - 1]) {
+                res.push(this[i]);
+            }
+        }
+        return res;
+    }
+
+    Array.prototype.extProc = function () {
+        var res = this.unique();
+        //字符串数组按倒数第二个字符排序
+        res.sort(function (a, b) {
+            var _a = a.substr(-2, 1);
+            var _b = b.substr(-2, 1);
+            return _a.charCodeAt(0) - _b.charCodeAt(0);
+        });
+        return res;
+    }
+    var str = ["kitty", "puppy", "swan", "penguin", "giraffe", "penguin", "swan", "dolphin"];
+    console.log("original array : " + str);
+    console.log("new array : " + str.extProc());
+</script>
+
+</body>
+</html>
+

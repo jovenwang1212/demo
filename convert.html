@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    //请将阿拉伯数字转换成中文数字  5234 =>"五千二百三十四"
+
+    //工具包
+    var Utils = {
+        /**
+         * 数字转中文
+         *
+         * @number {Integer} 形如123的数字
+         * @return {String} 返回转换成的形如 一百二十三 的字符串
+         */
+        numberToChinese: function (number) {
+
+            //判断是否为整数数字
+            if (!/^\d*?$/.test(number)) {
+                throw new Error("请输入整数数字");
+                return "请输入整数数字";
+            }
+
+            //首位是零,去掉
+            number = parseInt(number);
+
+            var a = (number + '').split(''), s = "";
+            var len = a.length;
+
+            //判断数字是否过大
+            if (len > 9) {
+                throw new Error('数字过大');
+                return "数字过大";
+            }
+
+            //中文数字单位
+            var units = ["", "十", "百", "千", "万", "十", "百", "千", "亿", "十", "百", "千"];
+
+            //中文数字字符
+            var chars = ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九"];
+
+            a.reverse();
+
+            for (var i = len - 1; i >= 0; i--) {
+                //最后一位是零的话，忽略
+                if (!(i === 0 && a[i] === "0")) {
+                    s += chars[a[i]] + units[i];
+                }
+            }
+            return s;
+        }
+    };
+
+    var num = "02345678";
+    console.log("原数字： " + num);
+    console.log("中文数字： " + Utils.numberToChinese(num));
+</script>
+</body>
+</html>

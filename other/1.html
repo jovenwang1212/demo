@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>浮动父div没有高度</title>
+    <style>
+        #child {
+            width: 100px;
+            height: 100px;
+            background-color: green;
+            float: left;
+        }
+
+        #parent {
+            border: 1px solid red;
+            float:left;
+        }
+
+        #clearDiv {
+            clear: both;
+            height: 0,
+            overflow: hidden
+        }
+    </style>
+</head>
+<body>
+<h1>浮动父div没有高度</h1>
+<h3>父元素也浮动</h3>
+<h3>加clear div</h3>
+
+<div id="parent">
+    <div id="child"></div>
+    <!--
+     <div id="clearDiv"></div>
+    -->
+
+</div>
+</body>
+</html>
