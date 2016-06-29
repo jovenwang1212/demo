@@ -1,0 +1,185 @@
+<html>
+<meta charset="utf-8">
+<body>
+<div style="width:500px;margin:30px auto 0 auto;text-align:center;">
+
+	<canvas id="canvas" width="500px" height="500px"></canvas>
+	<button id="btn" style="margin-top:20px;">抽奖</button>
+
+</div>
+<script>
+	// var info=["一等奖","二等奖","三等奖","四等奖","五等奖","六等奖","七等奖","八等奖","九等奖","十等奖"];
+	var items=[
+		{
+			name:"一等奖",
+			weight:5
+		},
+		{
+			name:"二等奖",
+			weight:3
+		},
+		{
+			name:"三等奖",
+			weight:2
+		},
+		{
+			name:"四等奖",
+			weight:9
+		},
+		{
+			name:"五等奖",
+			weight:4
+		},
+		{
+			name:"六等奖",
+			weight:1
+		},
+		{
+			name:"七等奖",
+			weight:3
+		},
+		{
+			name:"八等奖",
+			weight:10
+		},
+	];
+var color=[];
+var allArc = 2*Math.PI;
+var outerR = 150; //轮盘的大小
+var interR = 50;//内存空白圆的大小
+var beginAngle=50;//旋转起来时默认开始旋转的度数，度数愈大旋转的初始速度愈大
+var radio = 0.95;//旋转速度衰减系数，影响旋转时间
+var t = null;
+
+window.onload=function() {
+      // for ( var i = 0; i < 10; i++) {
+      //        color.push(getColor());
+      // }
+      var canvas = document.getElementById("canvas");
+      var context = canvas.getContext("2d");
+      context.translate(250,250);
+      Arrow(context);
+      render(context,items);
+      document.getElementById("btn").onclick=function(){
+             if(t){
+                    return false;
+             }
+             var step = beginAngle +Math.random()*10;
+             var angle = 0;
+             t = setInterval(function(){
+                    step *=radio;
+                    if(step <= 0.1){
+                           clearInterval(t);
+                           t =null;
+                           // var pos = Math.ceil(angle / 36);
+                           // var res = info[10-pos];
+                           var res = getRes(angle,items);
+                           context.save();
+                           context.beginPath();
+                           context.font="23px 微软雅黑";
+                           context.fillStyle="#f00";
+                           context.textAlign="center";
+                           context.textBaseline="middle";
+                           context.fillText(res,0,0);
+                           context.restore();
+                    }else{
+                           context.clearRect(-250,-250,500,500);
+                           angle+=step;
+                           if(angle > 360){
+                                  angle -=360;
+                           }
+                           context.save();
+                           context.beginPath();
+                           context.rotate(angle * Math.PI/180);
+                           render(context,items);
+                           context.restore();
+                           Arrow(context);
+                    }
+             },60);
+      };
+};
+
+function getRes(angle,items){
+
+	var allWeight = 0,anglePercent = 1-angle/360,curWeight=0;nextWeight=0;
+	for(var i=0;i<items.length;i++){
+		allWeight += items[i].weight;
+	}
+
+	for(var i=0;i<items.length;i++){
+		nextWeight += items[i].weight;
+		if(curWeight/allWeight<=anglePercent&&nextWeight/allWeight>anglePercent){
+			return items[i].name;
+		}
+		curWeight=nextWeight;
+	}
+}
+ 
+function Arrow(context){
+      context.save();
+      context.beginPath();
+      context.lineWidth = 5;
+      context.moveTo(170,0);
+      context.lineTo(180,15);
+      context.lineTo(180,5);
+      context.lineTo(250,5);
+      context.lineTo(250,-5);
+      context.lineTo(180,-5);
+      context.lineTo(180,-15);
+      context.closePath();
+      context.fill();
+      context.restore();
+}
+
+function render(context,items){
+	var len = items.length;
+	var allWeight=0;
+
+	  for ( var i = 0; i < len; i++) {
+             color.push(getColor());
+             allWeight += items[i].weight;
+      }
+
+      var lastArc = 0,lastAllWeight=0,thisArc=0;
+      for ( var i = 0; i < len; i++) {
+      		var item = items[i];
+      		lastAllWeight += item.weight;
+             context.save();
+             context.beginPath();
+             context.moveTo(0,0);
+             context.fillStyle=color[i];
+             thisArc=allArc*lastAllWeight/allWeight;
+             context.arc(0,0,outerR,lastArc,thisArc);
+             
+             context.fill();
+             context.restore();
+
+             context.save();
+             context.beginPath();
+             context.fillStyle="#000";
+             context.font="15px 微软雅黑";
+             context.textAlign="center";
+             context.textBaseline="middle";
+             context.rotate(lastArc+allArc*item.weight/allWeight/2);
+             context.fillText(item.name,(outerR + interR)/2,0);
+             context.restore();
+
+             lastArc= thisArc;
+      }
+      
+      context.save();
+      context.beginPath();
+      context.fillStyle="#fff";
+      context.arc(0,0,interR,0,2*Math.PI);
+      context.fill();
+      context.restore();
+}
+function getColor(){
+      var random = function(){
+             return Math.floor(Math.random()*255);
+      }
+      return "rgb("+random()+","+random()+","+random()+")";
+}
+</script>
+</body>
+</html>
